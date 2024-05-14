@@ -7,8 +7,17 @@ import {
 } from "./lib";
 
 class IMAPSettingsDetector {
+  /**
+   * Constructor for IMAPSettingsDetector.
+   * @param {string[]} autoDiscoverURLs - Array of auto-discover URLs for IMAP settings.
+   */
   constructor(private readonly autoDiscoverURLs: string[] = []) {}
-
+  /**
+   * Detects IMAP connection settings for the given email and password.
+   * @param email - The email address to detect IMAP settings for.
+   * @param password - The password for the email account. Default is "hello".
+   * @returns IMAP connection settings or null if not found.
+   */
   async detect(
     email: string,
     password: string = "hello"

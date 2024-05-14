@@ -1,11 +1,16 @@
-import Connection from 'imap';
+import Connection from "imap";
 import { IMAPConnectionSettings } from "../types";
-
 interface UserCredentials {
   user: string;
   password: string;
 }
 
+/**
+ * Checks the IMAP connection using the provided credentials and server settings.
+ * @param credentials - The user credentials for authentication.
+ * @param server - The IMAP server connection settings.
+ * @returns IMAP connection settings if successful, or null.
+ */
 async function checkIMAPConnection(
   credentials: UserCredentials,
   server: IMAPConnectionSettings
@@ -22,8 +27,8 @@ async function checkIMAPConnection(
     tlsOptions: {
       host,
       port,
-      servername: host
-    }
+      servername: host,
+    },
   });
 
   return new Promise((resolve) => {
@@ -50,4 +55,4 @@ async function checkIMAPConnection(
   });
 }
 
-export default checkIMAPConnection 
+export default checkIMAPConnection;

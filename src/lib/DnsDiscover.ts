@@ -1,15 +1,12 @@
 import * as dns from "dns";
 import { IMAPConnectionSettings } from "../types";
 
-/**
- * Class representing IMAP connection settings detector.
- */
+
 class DnsDiscover {
   /**
    * Detects IMAP connection settings.
-   * @param {string} address - Email address.
-   * @param {string} [password] - Password.
-   * @returns {Promise<IMAPConnectionSettings|null>} - Promise that resolves with IMAP connection settings or null.
+   * @param address - Email address.
+   * @returns IMAP connection settings or null.
    */
   static async detectIMAPConnectionSettings(
     address: string
@@ -39,9 +36,9 @@ class DnsDiscover {
 
   /**
    * Checks IMAP protocol for SRV records.
-   * @param {string} protocol - Protocol to check (imap or imaps).
-   * @param {string} domain - Domain to check SRV records for.
-   * @returns {Promise<IMAPConnectionSettings|null>} - Promise that resolves with IMAP connection settings or null.
+   * @param protocol - Protocol to check (imap or imaps).
+   * @param domain - Domain to check SRV records for.
+   * @returns IMAP connection settings or null.
    */
   static async checkProtocol(
     protocol: string,
@@ -75,7 +72,7 @@ class DnsDiscover {
   /**
    * Queries SRV records for auto-discovery URLs for the given domain.
    * @param domain - The domain to search for auto-discovery URLs.
-   * @returns A promise resolving to an array of auto-discovery URLs.
+   * @returns Array of auto-discovery URLs.
    */
   static async autoDiscoverFromSRVRecords(
     domain: string

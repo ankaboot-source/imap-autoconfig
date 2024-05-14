@@ -44,7 +44,7 @@ class IMAPAutoDiscover {
   }
 
   /**
-   * Fetche IMAP configureation from an auto-discover URL.
+   * Fetch IMAP configuration from an auto-discover URL.
    * @param url - The URL to fetch configurations from.
    * @param options - authentication options.
    */
@@ -105,8 +105,7 @@ class IMAPAutoDiscover {
   /**
    * Detect IMAP services for the given email.
    * @param email - The email address to detect IMAP services for.
-   * @returns A promise resolving to an array of detected IMAP services.
-   * @throws Throws an error if detecting IMAP services fails.
+   * @returns Array of detected IMAP services OR null.
    */
   public async detectIMAPConnectionSettings(
     email: string

@@ -1,17 +1,44 @@
 {
   "name": "imap-autoconfig",
-  "version": "0.1.5",
   "description": "Detect IMAP configuration for an e-mail address",
-  "author" : "Andris Reinman",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "version": "0.1.5",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "url": "https://github.com/ankaboot-source/imap-autoconfig"
   },
+  "scripts": {
+    "build": "tsup",
+    "test": "jest"
+  },
+  "keywords": [
+    "imap",
+    "auto-detect",
+    "auto-config"
+  ],
+  "author": "Ankaboot.io",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.6.8",
+    "fast-xml-parser": "^4.3.6",
     "fetch": "*",
-    "xml2object": "git://github.com/andris9/node-xml2object.git",
+    "imap": "^0.8.19",
     "inbox": "*",
-    "redis": "*"
+    "ioredis": "^5.4.1",
+    "node-imap": "^0.9.6",
+    "redis": "*",
+    "tsup": "^8.0.2",
+    "xml2object": "git://github.com/andris9/node-xml2object.git"
+  },
+  "devDependencies": {
+    "@types/imap": "^0.8.40",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.12.8",
+    "@types/node-imap": "^0.9.3",
+    "jest": "^29.7.0",
+    "jest-cli": "^29.7.0",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.5"
   }
 }

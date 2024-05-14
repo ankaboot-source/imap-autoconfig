@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosHeaders } from "axios";
+import axios from "axios";
 import { IMAPAutoDiscover } from "../src/lib";
 
 jest.mock("axios");
@@ -11,7 +11,7 @@ describe("IMAPAutoDiscover", () => {
   });
 
   describe("generateServiceURLs", () => {
-    it("should generate service URLs for a valid email", () => {
+    test("should generate service URLs for a valid email", () => {
       const email = "user@example.com";
       const expected = [
         "http://autoconfig.example.com/mail/config-v1.1.xml?emailaddress=user@example.com",
@@ -27,7 +27,7 @@ describe("IMAPAutoDiscover", () => {
       expect(imapAutoDiscover["generateServiceURLs"](email)).toEqual(expected);
     });
 
-    it("should throw an error for an invalid email", () => {
+    test("should throw an error for an invalid email", () => {
       const email = "invalid_email";
       expect(() => imapAutoDiscover["generateServiceURLs"](email)).toThrow(
         "Invalid email address provided"
@@ -36,7 +36,7 @@ describe("IMAPAutoDiscover", () => {
   });
 
   describe("fetchConfiguration", () => {
-    it("should fetch configuration from a URL", async () => {
+    test("should fetch configuration from a URL", async () => {
       const dummyURL =
         "http://autodiscover.example.com/autodiscover/autodiscover.xml";
       const mockedData = `

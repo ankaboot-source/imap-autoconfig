@@ -38,6 +38,36 @@ describe("DnsDiscover", () => {
     });
   });
 
+  describe("checkProtocol", () => {
+    test("should return IMAPConnectionSettings when DNS resolution is successful", async () => {
+      (
+        dns.resolve as jest.MockedFunction<typeof dns.resolve>
+      ).mockImplementation((domain, type, callback) => {
+        callback(null, [
+          { name: "mail.example.com", port: 993, priority: 0, weight: 1 },
+        ]);
+      });
+      const result = await DnsDiscover.checkProtocol("imaps", "example.com");
+
+      expect(result).toEqual({
+        host: "mail.example.com",
+        port: 993,
+        secure: true,
+      });
+    });
+
+    test("should return null when DNS resolution fails", async () => {
+      (
+        dns.resolve as jest.MockedFunction<typeof dns.resolve>
+      ).mockImplementation((domain, type, callback) => {
+        callback(null, []);
+      });
+      const result = await DnsDiscover.checkProtocol("imap", "example.com");
+
+      expect(result).toBeNull();
+    });
+  });
+
   describe("autoDiscoverFromSRVRecords", () => {
     test("should return auto-discovery URLs", async () => {
       const mockResolvedValue: SrvRecord[] = [

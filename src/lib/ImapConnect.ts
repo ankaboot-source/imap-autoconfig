@@ -32,9 +32,10 @@ async function checkIMAPConnection(
       resolve(server);
     });
 
-    imap.once("error", (err: any) => {
+    imap.once("error", (err: unknown) => {
       imap.end();
       if (
+        err instanceof Error &&
         "source" in err &&
         err.source === "authentication" &&
         !("message" in err && err.message.toLowerCase().includes("disabled"))

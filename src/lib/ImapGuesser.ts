@@ -1,5 +1,5 @@
 import * as dns from "dns";
-import { IMAPConnectionSettings } from '../types'
+import { IMAPConnectionSettings } from "../types";
 
 interface Autoroute {
   [key: string]: IMAPConnectionSettings;
@@ -29,7 +29,7 @@ class IMAPSettingsGuesser {
   };
 
   async detectIMAPConnectionSettings(
-    address: string,
+    address: string
   ): Promise<IMAPConnectionSettings[] | null> {
     if (!address) {
       throw new Error("Address is required");
@@ -41,57 +41,58 @@ class IMAPSettingsGuesser {
       throw new Error("Invalid email address format");
     }
 
-    const checkdomains = new Set(this.domains.map((domainPattern) =>
-      domainPattern.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
-    ));
+    const checkdomains = new Set(
+      this.domains.map((domainPattern) =>
+        domainPattern.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
+      )
+    );
 
-    try {
-      const mxdomain = await this.getMXDomain(domain);
-      if (mxdomain && this.autoroute[mxdomain]) {
-        return [this.autoroute[mxdomain]];
-      }
-
-      if (mxdomain && !checkdomains.has(mxdomain)) {
-        checkdomains.add(
-          mxdomain.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
-        );
-      }
-
-      return this.generateCheckMatrix(Array.from(checkdomains)).flat();
-    } catch (e) {
-      console.log(e)
-      return [];
+    const mxdomain = await this.getMXDomain(domain);
+    
+    if (mxdomain && this.autoroute[mxdomain]) {
+      return [this.autoroute[mxdomain]];
     }
+
+    if (mxdomain && !checkdomains.has(mxdomain)) {
+      checkdomains.add(
+        mxdomain.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
+      );
+    }
+
+    return this.generateCheckMatrix(Array.from(checkdomains)).flat();
   }
 
-  private generateCheckMatrix(checkdomains: string[]): IMAPConnectionSettings[][] {
-    const matrix: IMAPConnectionSettings[][] = [];
+  private generateCheckMatrix(
+    checkdomains: string[]
+  ): IMAPConnectionSettings[] {
+    const matrix: IMAPConnectionSettings[] = [];
     this.ports.forEach((port) => {
       checkdomains.forEach((domain) => {
-        matrix.push([
+        matrix.push(
           {
             host: domain,
             port: port,
             secure: port === 993,
           },
-        ]);
+        );
       });
     });
     return matrix;
   }
 
   private async getMXDomain(domain: string): Promise<string | null> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       dns.resolve(domain, "MX", (err, addresses) => {
         if (err) {
-          return reject(err);
+          return resolve(null);
         }
         if (!addresses || !addresses.length) {
           return resolve(null);
         }
-        addresses
-          .sort((a, b) => a.priority - b.priority)
-        return resolve((addresses[0].exchange || "").toString().toLowerCase().trim());
+        addresses.sort((a, b) => a.priority - b.priority);
+        return resolve(
+          (addresses[0].exchange || "").toString().toLowerCase().trim()
+        );
       });
     });
   }

@@ -81,7 +81,7 @@ class DnsDiscover {
     domain: string
   ): Promise<string[] | null> {
     const srvRecords: dns.SrvRecord[] | null = await new Promise(
-      (resolve, _) => {
+      (resolve) => {
         dns.resolveSrv(`_autodiscover._tcp.${domain}`, (err, addresses) => {
           if (err) {
             resolve(null);

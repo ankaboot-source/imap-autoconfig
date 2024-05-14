@@ -6,12 +6,12 @@ export function findAttribute<T>(data: T, attrName: string) {
     if (typeof obj !== "object" || obj === null) {
       return null;
     }
-    if (obj.hasOwnProperty(attrName)) {
-      // @ts-ignore
+    if (Object.prototype.hasOwnProperty.call(obj, attrName)) {
+      // @ts-expect-error - can't determine type
       return obj[attrName];
     }
     for (const key in obj) {
-      // @ts-ignore
+      // @ts-expect-error - can't determine type
       const value = search(obj[key]);
       if (value !== undefined) {
         return value;

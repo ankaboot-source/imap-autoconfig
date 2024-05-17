@@ -52,10 +52,7 @@ class DnsDiscover {
         }
 
         if (
-          !addresses ||
-          !addresses.length ||
-          !addresses[0].name ||
-          addresses[0].name === "."
+          !addresses?.[0]?.name || addresses[0].name === "."
         ) {
           resolve(null);
           return;

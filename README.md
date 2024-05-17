@@ -7,7 +7,7 @@ Detects e-mail connection settings for a given email address.
 Install the package using NPM:
 
 ```bash
-npm install imap-autoconfig
+npm i @ankaboot.io/imap-autoconfig
 ```
 
 ## Usage

@@ -1,7 +1,7 @@
 {
   "name": "@ankaboot.io/imap-autoconfig",
   "description": "Detect IMAP configuration for an e-mail address",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -40,5 +40,7 @@
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.9.0"
   },
-  "publishConfig": {"access": "public"}
+  "publishConfig": {
+    "access": "public"
+  }
 }

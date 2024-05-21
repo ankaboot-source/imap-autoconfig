@@ -126,7 +126,7 @@ class IMAPAutoDiscover {
 
     const fulfilledResults = imapConfigsArray.filter(
       (result): result is PromiseFulfilledResult<IMAPConnectionSettings[]> =>
-        result.status === "fulfilled"
+        result.status === "fulfilled" && result.value !== null
     );
 
     return fulfilledResults.length > 0

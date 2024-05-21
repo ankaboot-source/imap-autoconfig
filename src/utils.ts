@@ -27,6 +27,19 @@ export function findAttribute<T>(data: T, attrName: string) {
   return search(data);
 }
 
+function transformToIMAPSettings(
+  conf: AutodiscoverIMAPSettings
+): IMAPConnectionSettings | null {
+  const imapType = conf.type ?? conf.Type;
+  if (imapType !== "imap") return null;
+
+  return {
+    host: conf.hostname ?? conf.Server,
+    port: conf.port ?? conf.Port,
+    secure: conf.socketType === "SSL" || conf.SSL === "on",
+  };
+}
+
 /**
  * Parses IMAP configuration from XML string
  * to extract spesific attributes.
@@ -36,34 +49,28 @@ export function findAttribute<T>(data: T, attrName: string) {
  */
 export function parseIMAPConfigsFromXML(
   sourceString: string,
-  extractAtr = ["incomingServer", "Protocol"]
+  extractAttrs = ["incomingServer", "Protocol"]
 ): IMAPConnectionSettings[] | null {
   const parsedData = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: "",
   }).parse(sourceString);
-  const extractedAttr = extractAtr
-    ?.map((attr) => {
-      const conf = findAttribute(
-        parsedData,
-        attr
-      ) as AutodiscoverIMAPSettings | null;
 
-      if (!conf || (conf.type ?? conf.Type) !== 'imap') {
-        return null;
-      }
+  const extractedAttrs = extractAttrs.flatMap((attr) => {
+    const conf = findAttribute(parsedData, attr);
+    if (!conf) return [];
 
-      return {
-        host: conf.hostname ?? conf.Server,
-        port: conf.port ?? conf.Port,
-        secure: conf.socketType === "SSL" || conf.SSL === "on",
-      };
-    })
-    .filter(Boolean) as IMAPConnectionSettings[];
+    if (Array.isArray(conf)) {
+      return conf
+        .map(transformToIMAPSettings)
+        .filter(
+          (settings): settings is IMAPConnectionSettings => settings !== null
+        );
+    }
 
-  if (extractAtr) {
-    return extractedAttr.length > 0 ? extractedAttr : null;
-  }
+    const settings = transformToIMAPSettings(conf as AutodiscoverIMAPSettings);
+    return settings ? [settings] : [];
+  });
 
-  return parsedData ?? null;
+  return extractedAttrs.length ? extractedAttrs : null;
 }

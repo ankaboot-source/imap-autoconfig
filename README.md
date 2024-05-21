@@ -1,4 +1,4 @@
-# IMAP AutoConfig
+# imap-autoconfig
 
 Detects e-mail connection settings for a given email address. 
 
@@ -13,7 +13,7 @@ npm i @ankaboot.io/imap-autoconfig
 ## Usage
 
 ```tsx
-import { IMAPSettingsDetector } from 'imap-autoconfig';
+import IMAPSettingsDetector from 'imap-autoconfig';
 
 const detector = new IMAPSettingsDetector();
 
@@ -48,6 +48,10 @@ The response from the `detect` method is an object with the following properties
 }
 ```
 
+## Credits
+
+This project is a fork of the original [imap-autoconfig](https://github.com/andris9/imap-autoconfig) created by [Andris Reinman](https://github.com/andris9). 
+
 ## License
 
 This project is licensed under the MIT License.
@@ -55,6 +59,8 @@ This project is licensed under the MIT License.
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request on GitHub.
+
+
 
 ## Support
 

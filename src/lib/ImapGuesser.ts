@@ -36,6 +36,11 @@ class IMAPSettingsGuesser {
       host: "imap.gmail.com",
       secure: true,
     },
+    "mail.protection.outlook.com": {
+      host: "outlook.office365.com",
+      port: 993,
+      secure: true,
+    },
   };
 
   /**
@@ -44,7 +49,7 @@ class IMAPSettingsGuesser {
    * @returns Array of possible IMAP connection settings or null.
    */
   async detectIMAPConnectionSettings(
-    address: string
+    address: string,
   ): Promise<IMAPConnectionSettings[] | null> {
     if (!address) {
       throw new Error("Address is required");
@@ -59,18 +64,25 @@ class IMAPSettingsGuesser {
     const checkdomains = new Set(
       this.domains.map((domainPattern) =>
         domainPattern.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
-      )
+      ),
     );
 
     const mxdomain = await this.getMXDomain(domain);
 
-    if (mxdomain && this.autoroute[mxdomain]) {
-      return [this.autoroute[mxdomain]];
-    }
+    if (mxdomain) {
+      if (this.autoroute[mxdomain]) {
+        return [this.autoroute[mxdomain]];
+      }
 
+      for (const route of Object.keys(this.autoroute)) {
+        if (mxdomain.includes(route)) {
+          return [this.autoroute[route]];
+        }
+      }
+    }
     if (mxdomain && !checkdomains.has(mxdomain)) {
       checkdomains.add(
-        mxdomain.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
+        mxdomain.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain),
       );
     }
 
@@ -83,7 +95,7 @@ class IMAPSettingsGuesser {
    * @returns Possible IMAP connection settings.
    */
   private generateCheckMatrix(
-    checkdomains: string[]
+    checkdomains: string[],
   ): IMAPConnectionSettings[] {
     const matrix: IMAPConnectionSettings[] = [];
     this.ports.forEach((port) => {
@@ -106,7 +118,10 @@ class IMAPSettingsGuesser {
    */
   private async getMXDomain(domain: string): Promise<string | null> {
     return new Promise((resolve) => {
-      dns.resolve(domain, "MX", (err, addresses) => {
+      dns.resolve(domain, "MX", (err: unknown, addresses: {
+        priority: number;
+        exchange: string;
+      }[]) => {
         if (err) {
           return resolve(null);
         }
@@ -115,7 +130,7 @@ class IMAPSettingsGuesser {
         }
         addresses.sort((a, b) => a.priority - b.priority);
         return resolve(
-          (addresses[0].exchange || "").toString().toLowerCase().trim()
+          (addresses[0].exchange || "").toString().toLowerCase().trim(),
         );
       });
     });

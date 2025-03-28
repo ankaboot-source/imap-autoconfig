@@ -10,14 +10,21 @@ interface UserCredentials {
  * Determines if the error is an authentication error (but not account disabled)
  */
 function isAuthenticationError(err: unknown): boolean {
-  if (!(err instanceof Error)) return false;
-
-  return (
-    err.message.toLowerCase().includes("authentication") &&
-    !err.message.toLowerCase().includes("disabled")
-  );
+  if (
+    typeof err === "object" &&
+    err !== null &&
+    "response" in err &&
+    "authenticationFailed" in err &&
+    typeof err.response === "string" &&
+    typeof err.authenticationFailed === "boolean"
+  ) {
+    return (
+      err.authenticationFailed &&
+      !err.response.toLowerCase().includes("disabled")
+    );
+  }
+  return false;
 }
-
 /**
  * Checks the IMAP connection using the provided credentials and server settings.
  * @param credentials - The user credentials for authentication.

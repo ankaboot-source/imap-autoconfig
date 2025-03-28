@@ -1,8 +1,21 @@
-import Connection from "imap";
+import { ImapFlow } from "imapflow";
 import { IMAPConnectionSettings } from "../types";
+
 interface UserCredentials {
   user: string;
   password: string;
+}
+
+/**
+ * Determines if the error is an authentication error (but not account disabled)
+ */
+function isAuthenticationError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+
+  return (
+    err.message.toLowerCase().includes("authentication") &&
+    !err.message.toLowerCase().includes("disabled")
+  );
 }
 
 /**
@@ -13,46 +26,28 @@ interface UserCredentials {
  */
 async function checkIMAPConnection(
   credentials: UserCredentials,
-  server: IMAPConnectionSettings
+  server: IMAPConnectionSettings,
 ): Promise<IMAPConnectionSettings | null> {
   const { user, password, host, port, secure } = { ...credentials, ...server };
-
-  const imap = new Connection({
-    authTimeout: 10000,
-    user,
-    password,
+  const client = new ImapFlow({
     host,
     port,
-    tls: secure,
-    tlsOptions: {
-      host,
-      port,
-      servername: host,
+    secure,
+    logger: false,
+    verifyOnly: true,
+    auth: {
+      user,
+      pass: password,
     },
+    tls: { servername: host },
+    connectionTimeout: 10000,
   });
-
-  return new Promise((resolve) => {
-    imap.once("ready", () => {
-      imap.end();
-      resolve(server);
-    });
-
-    imap.once("error", (err: unknown) => {
-      imap.end();
-      if (
-        err instanceof Error &&
-        "source" in err &&
-        err.source === "authentication" &&
-        !("message" in err && err.message.toLowerCase().includes("disabled"))
-      ) {
-        resolve(server);
-      } else {
-        resolve(null);
-      }
-    });
-
-    imap.connect();
-  });
+  try {
+    await client.connect();
+    return server;
+  } catch (err) {
+    return isAuthenticationError(err) ? server : null;
+  }
 }
 
 export default checkIMAPConnection;

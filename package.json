@@ -1,7 +1,7 @@
 {
   "name": "@ankaboot.io/imap-autoconfig",
   "description": "Detect IMAP configuration for an e-mail address",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -21,27 +21,24 @@
   "author": "Ankaboot.io",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.6.8",
-    "fast-xml-parser": "^4.3.6",
-    "imap": "^0.8.19",
-    "tsup": "^8.0.2"
-  },
-  "overrides": {
-    "semver": "^7.6.3"
+    "axios": "^1.8.4",
+    "fast-xml-parser": "^5.0.9",
+    "imapflow": "^1.0.184",
+    "tsup": "^8.4.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.2.0",
-    "@types/imap": "^0.8.40",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.17.6",
-    "@types/node-imap": "^0.9.3",
-    "eslint": "^8.57.0",
-    "globals": "^15.2.0",
+    "@eslint/js": "^9.23.0",
+    "@types/imap": "^0.8.42",
+    "@types/imapflow": "^1.0.20",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.14",
+    "eslint": "^9.23.0",
+    "globals": "^16.0.0",
     "jest": "^29.7.0",
     "jest-cli": "^29.7.0",
-    "ts-jest": "^29.1.2",
-    "typescript": "^5.4.5",
-    "typescript-eslint": "^7.9.0"
+    "ts-jest": "^29.3.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.28.0"
   },
   "publishConfig": {
     "access": "public"

@@ -63,7 +63,7 @@ class IMAPSettingsGuesser {
 
     const checkdomains = new Set(
       this.domains.map((domainPattern) =>
-        domainPattern.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
+        domainPattern.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain),
       ),
     );
 
@@ -118,21 +118,28 @@ class IMAPSettingsGuesser {
    */
   private async getMXDomain(domain: string): Promise<string | null> {
     return new Promise((resolve) => {
-      dns.resolve(domain, "MX", (err: unknown, addresses: {
-        priority: number;
-        exchange: string;
-      }[]) => {
-        if (err) {
-          return resolve(null);
-        }
-        if (!addresses || !addresses.length) {
-          return resolve(null);
-        }
-        addresses.sort((a, b) => a.priority - b.priority);
-        return resolve(
-          (addresses[0].exchange || "").toString().toLowerCase().trim(),
-        );
-      });
+      dns.resolve(
+        domain,
+        "MX",
+        (
+          err: unknown,
+          addresses: {
+            priority: number;
+            exchange: string;
+          }[],
+        ) => {
+          if (err) {
+            return resolve(null);
+          }
+          if (!addresses || !addresses.length) {
+            return resolve(null);
+          }
+          addresses.sort((a, b) => a.priority - b.priority);
+          return resolve(
+            (addresses[0].exchange || "").toString().toLowerCase().trim(),
+          );
+        },
+      );
     });
   }
 }

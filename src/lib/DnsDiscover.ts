@@ -1,7 +1,6 @@
 import * as dns from "dns";
 import { IMAPConnectionSettings } from "../types";
 
-
 class DnsDiscover {
   /**
    * Detects IMAP connection settings.
@@ -9,7 +8,7 @@ class DnsDiscover {
    * @returns IMAP connection settings or null.
    */
   static async detectIMAPConnectionSettings(
-    address: string
+    address: string,
   ): Promise<IMAPConnectionSettings[] | null> {
     if (!address) {
       throw new Error("Address is required");
@@ -24,12 +23,12 @@ class DnsDiscover {
     const protocols = ["imap", "imaps"];
 
     const promises = protocols.map((protocol) =>
-      this.checkProtocol(protocol, domain)
+      this.checkProtocol(protocol, domain),
     );
 
     const fulfilledResults = (await Promise.allSettled(promises)).filter(
       (result): result is PromiseFulfilledResult<IMAPConnectionSettings> =>
-        result.status === "fulfilled" && result.value !== null
+        result.status === "fulfilled" && result.value !== null,
     );
     return fulfilledResults.map((result) => result.value) ?? null;
   }
@@ -42,7 +41,7 @@ class DnsDiscover {
    */
   static async checkProtocol(
     protocol: string,
-    domain: string
+    domain: string,
   ): Promise<IMAPConnectionSettings | null> {
     return new Promise<IMAPConnectionSettings | null>((resolve) => {
       dns.resolve(`_${protocol}._tcp.${domain}`, "SRV", (err, addresses) => {
@@ -51,9 +50,7 @@ class DnsDiscover {
           return;
         }
 
-        if (
-          !addresses?.[0]?.name || addresses[0].name === "."
-        ) {
+        if (!addresses?.[0]?.name || addresses[0].name === ".") {
           resolve(null);
           return;
         }
@@ -72,26 +69,24 @@ class DnsDiscover {
    * @returns Array of auto-discovery URLs.
    */
   static async autoDiscoverFromSRVRecords(
-    domain: string
+    domain: string,
   ): Promise<string[] | null> {
-    const srvRecords: dns.SrvRecord[] | null = await new Promise(
-      (resolve) => {
-        dns.resolveSrv(`_autodiscover._tcp.${domain}`, (err, addresses) => {
-          if (err) {
-            resolve(null);
-          } else {
-            resolve(addresses);
-          }
-        });
-      }
-    );
+    const srvRecords: dns.SrvRecord[] | null = await new Promise((resolve) => {
+      dns.resolveSrv(`_autodiscover._tcp.${domain}`, (err, addresses) => {
+        if (err) {
+          resolve(null);
+        } else {
+          resolve(addresses);
+        }
+      });
+    });
 
     return srvRecords
       ? srvRecords.map(
           ({ name, port }) =>
             `${
               port === 443 ? "https://" : "http://"
-            }${name}:${port}/autodiscover/autodiscover.xml`
+            }${name}:${port}/autodiscover/autodiscover.xml`,
         )
       : null;
   }

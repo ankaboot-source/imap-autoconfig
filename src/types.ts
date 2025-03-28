@@ -1,6 +1,5 @@
 import { AxiosRequestConfig } from "axios";
 
-
 export interface AutodiscoverIncomingServer {
   hostname: string;
   port: number;
@@ -17,7 +16,8 @@ export interface AutodiscoverProtocol {
   Type: string;
 }
 
-export type AutodiscoverIMAPSettings = AutodiscoverIncomingServer & AutodiscoverProtocol
+export type AutodiscoverIMAPSettings = AutodiscoverIncomingServer &
+  AutodiscoverProtocol;
 
 export interface WwwAuthOptions extends AxiosRequestConfig {
   username?: string;
@@ -26,7 +26,7 @@ export interface WwwAuthOptions extends AxiosRequestConfig {
 }
 
 export interface IMAPConnectionSettings {
-    host: string;
-    port: number;
-    secure: boolean;
+  host: string;
+  port: number;
+  secure: boolean;
 }

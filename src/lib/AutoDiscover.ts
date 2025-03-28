@@ -39,7 +39,7 @@ class IMAPAutoDiscover {
     const [user, domain] = email.split("@");
 
     return [...this.SOURCES].map((url) =>
-      url.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain)
+      url.replace(/%USER%/g, user).replace(/%DOMAIN%/g, domain),
     );
   }
 
@@ -50,7 +50,7 @@ class IMAPAutoDiscover {
    */
   private async fetchConfiguration(
     url: string,
-    options: WwwAuthOptions = {}
+    options: WwwAuthOptions = {},
   ): Promise<IMAPConnectionSettings[] | null> {
     const config: WwwAuthOptions = {
       ...options,
@@ -86,13 +86,13 @@ class IMAPAutoDiscover {
         if (wwwAuthenticate.includes("basic")) {
           if (!options.username || !options.password) {
             throw new Error(
-              "401 Authorization Required. Username or password is missing."
+              "401 Authorization Required. Username or password is missing.",
             );
           }
 
           const authorization = `Basic ${Buffer.from(
             `${options.username}:${options.password}`,
-            "utf-8"
+            "utf-8",
           ).toString("base64")}`;
           config.headers = { ...config.headers, Authorization: authorization };
           return this.fetchConfiguration(url, options);
@@ -108,7 +108,7 @@ class IMAPAutoDiscover {
    * @returns Array of detected IMAP services OR null.
    */
   public async detectIMAPConnectionSettings(
-    email: string
+    email: string,
   ): Promise<IMAPConnectionSettings[] | null> {
     const serviceUrls = this.generateServiceURLs(email);
 
@@ -126,7 +126,7 @@ class IMAPAutoDiscover {
 
     const fulfilledResults = imapConfigsArray.filter(
       (result): result is PromiseFulfilledResult<IMAPConnectionSettings[]> =>
-        result.status === "fulfilled" && result.value !== null
+        result.status === "fulfilled" && result.value !== null,
     );
 
     return fulfilledResults.length > 0

@@ -28,7 +28,7 @@ export function findAttribute<T>(data: T, attrName: string) {
 }
 
 function transformToIMAPSettings(
-  conf: AutodiscoverIMAPSettings
+  conf: AutodiscoverIMAPSettings,
 ): IMAPConnectionSettings | null {
   const imapType = conf.type ?? conf.Type;
   if (imapType !== "imap") return null;
@@ -49,7 +49,7 @@ function transformToIMAPSettings(
  */
 export function parseIMAPConfigsFromXML(
   sourceString: string,
-  extractAttrs = ["incomingServer", "Protocol"]
+  extractAttrs = ["incomingServer", "Protocol"],
 ): IMAPConnectionSettings[] | null {
   const parsedData = new XMLParser({
     ignoreAttributes: false,
@@ -64,7 +64,7 @@ export function parseIMAPConfigsFromXML(
       return conf
         .map(transformToIMAPSettings)
         .filter(
-          (settings): settings is IMAPConnectionSettings => settings !== null
+          (settings): settings is IMAPConnectionSettings => settings !== null,
         );
     }
 
